@@ -1,0 +1,53 @@
+﻿@using MSPApp.Infrastructure
+@using MSPApp.DB
+
+@model ReportingDecisionModel
+@{
+    List<SelectListItem> activityOptions = (ViewData[Constants.ActivityKey] as List<ActivityType>).Select(
+                                 x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).ToList();
+}
+
+<div class="jumbotron">
+    <h1>Welcome to Reporting</h1>
+    <p class="lead">If you have selected an activity from the list don't worry, we will take care of everything :)!</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Existing Activities from your univeristy</h2>
+        @{
+            if (ViewData[Constants.PreviousActivitiesKey] is Dictionary<int, string> previousSubmissions)
+            {
+                @using (Html.BeginForm("ExistingActivity", "Reporting", FormMethod.Post))
+                {
+                    <div class="form-group">
+                        <label class="control-label">Activity Name:</label>
+                        @Html.DropDownListFor(m => m.Value, previousSubmissions.Select(x => new SelectListItem { Text = x.Value, Value = x.Key.ToString() }), "Please select");
+                    </div>
+                    <input type="submit" value="Submit" class="btn btn-default" />
+                }
+            }
+            else
+            {
+                <p class="lead">Nothing, for now.</p>
+            }
+        }
+
+    </div>
+
+    <div class="col-md-4">
+
+    </div>
+
+    <div class="col-md-4">
+        <h2>Submit a New Activity</h2>
+        @using (Html.BeginForm("NewActivity", "Reporting", FormMethod.Post))
+        {
+            <div class="form-group">
+                <label class="control-label">Activity Name:</label>
+                @Html.DropDownListFor(m => m.Value, activityOptions, "Please select");
+            </div>
+            <input type="submit" value="Submit" class="btn btn-default" />
+        }
+    </div>
+</div>
