@@ -45,7 +45,9 @@ namespace MSPApp.Controllers
                 (graphUser, imageData) = await graphClient.GetCurrentUserFromGraph();
 
                 CurrentSession.AddToJSONFrom<User>(Constants.UserKey, graphUser);
-                CurrentSession.SetString(Constants.PictureKey, imageData);
+
+                if (imageData != null)
+                    CurrentSession.SetString(Constants.PictureKey, imageData);
             }
             else
             {

@@ -113,21 +113,24 @@ namespace MSPApp.Controllers
                 value => value);
             int startIndex = dbLink.SubmissionAssociation.Count();
 
-            foreach (string userName in newData.MSPsThatHelped.Split(";"))
+            if (!string.IsNullOrEmpty(newData.MSPsThatHelped))
             {
-                string formatted = userName.Trim().ToLower();
-
-                if (knownUsers.ContainsKey(formatted))
+                foreach (string userName in newData.MSPsThatHelped.Split(";"))
                 {
-                    int userID = knownUsers[formatted].Id;
-                    if (userID == currentUser.Id) continue;
+                    string formatted = userName.Trim().ToLower();
 
-                    dbLink.SubmissionAssociation.Add(new SubmissionAssociation
+                    if (knownUsers.ContainsKey(formatted))
                     {
-                        Id = startIndex++,
-                        SubmissionId = submissionID,
-                        UserId = userID
-                    });
+                        int userID = knownUsers[formatted].Id;
+                        if (userID == currentUser.Id) continue;
+
+                        dbLink.SubmissionAssociation.Add(new SubmissionAssociation
+                        {
+                            Id = startIndex++,
+                            SubmissionId = submissionID,
+                            UserId = userID
+                        });
+                    }
                 }
             }
             await dbLink.SaveChangesAsync();
